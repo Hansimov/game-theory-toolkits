@@ -29,6 +29,7 @@
 
 .blank {
   grid-area: blank;
+  width:300px;
   background-color: rgba(0, 0, 0, 0);
 }
 .ana {
@@ -40,13 +41,16 @@
 }
 .bob {
   grid-area: bob;
-  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /*align-self: center;*/
   /*width:50%;*/
 }
 .u {grid-area: u; color:#bc7f03;}
 .d {grid-area: d; color:#BB00BB;}
 .l {grid-area: l; color:#FF0000;}
-.r {grid-area: r; color:#00aaaa;}
+.r {grid-area: r; color:#0000BB;}
 .ul1 {grid-area: ul1;}
 .ul2 {grid-area: ul2;}
 .ur1 {grid-area: ur1;}
@@ -88,11 +92,19 @@ button {
 </style>
 
 <body>
+<h1>Our Team</h1>
+<font size=5><b>
+周彤彤（ZHOU Tongtong）<br>
+文振早（WEN  Zhenzao）<br>
+于泽汉（YU   Zehan）<br>
+</b></font>
 
-<h1>Payoff Matrix</h1>
+<br>
+<hr>
+<h1>Demo</h1>
 
 <div class="grid-container">
-  <p class="blank"> </p>
+  <p class="blank"></p>
   <div class="ana">Ana</div>
   <div class="bob">Bob</div>
 
@@ -145,6 +157,9 @@ button {
 
         for (var i=0; i<input_arr.length; i++){
             box_id = input_arr[i].substr(1, 4);
+            if ($('#i'+box_id).val() === ""){
+              $('#i'+box_id).val('0');
+            }
             eval('var '+box_id+' = parseInt($("#i'+box_id+'").val());');
         }
 
@@ -173,7 +188,10 @@ button {
                 } else{
                     sep_char = ''
                 }
-                details_str += ' <font size=5>' + sep_char + nash_equil[i].toUpperCase() + '</font>';
+
+                var nash_equil_chars = nash_equil[i].toUpperCase();
+                var nash_equil_str = nash_equil_chars; // Todo
+                details_str += ' <font size=5>' + sep_char + nash_equil_str + '</font>';
                 colorNashEquil(nash_equil[i]);
             }
             details_str += '</div>';
