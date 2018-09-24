@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Nash Equilibria Calculator - By Hansimov</title>
+</head>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<style>
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'blank blank bob bob bob bob'
+    'blank blank l l r r'
+    'ana u ul1 ul2 ur1 ur2'
+    'ana d dl1 dl2 dr1 dr2';
+  grid-gap: 5px;
+  background-color: #c9fafc;
+  padding: 5px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0px;
+  font-size: 30px;
+  /*border: 1px solid rgba(0,0,0,0.8);*/
+}
+
+.blank {
+  grid-area: blank;
+  background-color: rgba(0, 0, 0, 0);
+}
+.ana {
+  grid-area: ana;
+  display: flex;
+  /*align-self: center;*/
+  align-items: center;
+  justify-content: center;
+}
+.bob {
+  grid-area: bob;
+  align-self: center;
+  /*width:50%;*/
+}
+.u {grid-area: u; color:#bc7f03;}
+.d {grid-area: d; color:#BB00BB;}
+.l {grid-area: l; color:#FF0000;}
+.r {grid-area: r; color:#00aaaa;}
+.ul1 {grid-area: ul1;}
+.ul2 {grid-area: ul2;}
+.ur1 {grid-area: ur1;}
+.ur2 {grid-area: ur2;}
+.dl1 {grid-area: dl1;}
+.dl2 {grid-area: dl2;}
+.dr1 {grid-area: dr1;}
+.dr2 {grid-area: dr2;}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+#calc {
+    background-color: #4CAF50;
+}
+#gen {
+    background-color: #bc760d;
+}
+#reset{
+    background-color: #910833;
+}
+
+</style>
+
+<body>
+
+<h1>Payoff Matrix</h1>
+
+<div class="grid-container">
+  <p class="blank"> </p>
+  <div class="ana">Ana</div>
+  <div class="bob">Bob</div>
+
+  <div class="l">L</div>
+  <div class="r">R</div>
+  <div class="u">U</div>
+  <div class="d">D</div>
+
+  <div class="ul1">
+    <input type="number" id="iul1" value=3 placeholder="0" style="color:#00ff00;width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+  <div class="ul2">
+    <input type="number" id="iul2" value=9 placeholder="0" style="width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+  <div class="ur1">
+    <input type="number" id="iur1" value=1 placeholder="0" style="width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+  <div class="ur2">
+    <input type="number" id="iur2" value=8 placeholder="0" style="width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+  <div class="dl1">
+    <input type="number" id="idl1" value=0 placeholder="0" style="width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+  <div class="dl2">
+    <input type="number" id="idl2" value=0 placeholder="0" style="width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+  <div class="dr1">
+    <input type="number" id="idr1" value=2 placeholder="0" style="width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+  <div class="dr2">
+    <input type="number" id="idr2" value=1 placeholder="0" style="width:100%;height:100%;border:none;font-size:30px;text-align:center;"></div>
+</div>
+
+<br>
+<button id="calc" type="button" onclick="calcNashEquil()" style="height:100px;width:450px;font-size:25px;">Calculate Nash Equilibrium</button>
+
+<button id="gen"  type="button" onclick="genNewPayoff()" style="height:100px;width:450px;font-size:25px;">Generate Random Payoff Matrix</button>
+<button id="reset" type="button" onclick="resetPayoff()" style="height:100px;width:450px;font-size:25px;">Reset Payoff Matrix</button>
+
+<br><br>
+<div class="details">
+</div>
+
+</body>
+<script>
+    var input_arr = ["iul1", "iul2", "iur1", "iur2", "idl1", "idl2", "idr1", "idr2"];
+    for (var i=0; i<input_arr.length; i++){
+        var box_id = input_arr[i];
+        var id_selector = '#' + box_id;
+        var color_order = box_id[parseInt(box_id[3])].toString();
+        $(id_selector).css("color", $("."+color_order).css("color"));
+    }
+
+    function calcNashEquil() {
+        decolorNashEquil();
+        var nash_equil = []
+
+        for (var i=0; i<input_arr.length; i++){
+            box_id = input_arr[i].substr(1, 4);
+            eval('var '+box_id+' = parseInt($("#i'+box_id+'").val());');
+        }
+
+        if (ul1>=dl1 && ul2>=ur2) {
+            nash_equil.push('ul');
+        }
+        if (ur1>=dr1 && ul2<=ur2) {
+            nash_equil.push('ur');
+        }
+        if (ul1<=dl1 && dl2>=dr2) {
+            nash_equil.push('dl');
+        }
+        if (ur1<=dr1 && dl2<=dr2) {
+            nash_equil.push('dr');
+        }
+
+        // console.log(nash_equil);
+        var details_str = '<h1>Nash Equilibria</h1>' + '<div>'
+        if (nash_equil.length===0){
+            details_str += '<font color="red" size=5> None </font>'
+        }
+        else {
+            for (var i=0; i<nash_equil.length; i++){
+                if (i>=1){
+                    sep_char = ', '
+                } else{
+                    sep_char = ''
+                }
+                details_str += ' <font size=5>' + sep_char + nash_equil[i].toUpperCase() + '</font>';
+                colorNashEquil(nash_equil[i]);
+            }
+            details_str += '</div>';
+        }
+
+        $('.details').html(details_str);
+    }
+
+    function colorNashEquil(box_id){
+        $('#i'+box_id+'1').css('background-color','#00ff00');
+        $('#i'+box_id+'2').css('background-color','#00ff00');
+        $('.'+box_id +'1').css('background-color','#00ff00');
+        $('.'+box_id +'2').css('background-color','#00ff00');
+    }
+
+    function decolorNashEquil() {
+        var box_id_list = ['ul', 'ur', 'dl', 'dr'];
+        for (var i=0; i<box_id_list.length; i++){
+            box_id = box_id_list[i]
+            $('#i'+box_id+'1').css('background-color','rgba(255, 255, 255, 0.8)');
+            $('#i'+box_id+'2').css('background-color','rgba(255, 255, 255, 0.8)');
+            $('.'+box_id +'1').css('background-color','rgba(255, 255, 255, 0.8)');
+            $('.'+box_id +'2').css('background-color','rgba(255, 255, 255, 0.8)');
+        }
+    }
+
+    function genNewPayoff(){
+        for (var i=0; i<input_arr.length; i++){
+            box_id = input_arr[i];
+            var id_selector = '#' + box_id;
+            var rand_int = Math.floor(Math.random() * 11);
+            $(id_selector).val(rand_int);
+        }
+        calcNashEquil()
+    }
+
+    function resetPayoff(){
+        var default_val = [3, 9, 1, 8, 0, 0, 2, 1];
+        for (var i=0; i<input_arr.length; i++){
+            var box_id = input_arr[i];
+            var id_selector = '#' + box_id;
+            $(id_selector).val(default_val[i]);
+        }
+        calcNashEquil()
+    }
+
+</script>
+</html>
