@@ -147,7 +147,7 @@ button {
     for (var i=0; i<input_arr.length; i++){
         var box_id = input_arr[i];
         var id_selector = '#' + box_id;
-        var color_order = box_id[parseInt(box_id[3])].toString();
+        var color_order = box_id[parseFloat(box_id[3])].toString();
         $(id_selector).css("color", $("."+color_order).css("color"));
     }
 
@@ -160,7 +160,7 @@ button {
             if ($('#i'+box_id).val() === ""){
               $('#i'+box_id).val('0');
             }
-            eval('var '+box_id+' = parseInt($("#i'+box_id+'").val());');
+            eval('var '+box_id+' = parseFloat($("#i'+box_id+'").val());');
         }
 
         if (ul1>=dl1 && ul2>=ur2) {
